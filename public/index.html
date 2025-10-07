@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Invoicing ROI Simulator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Invoicing ROI Simulator</h1>
+
+    <div class="card">
+      <form id="roiForm">
+        <input type="text" placeholder="Scenario Name" id="scenario_name" required />
+        <input type="number" placeholder="Invoices per Month" id="monthly_invoice_volume" required />
+        <input type="number" placeholder="AP Staff" id="num_ap_staff" required />
+        <input type="number" step="0.01" placeholder="Hours per Invoice" id="avg_hours_per_invoice" required />
+        <input type="number" placeholder="Hourly Wage (₹)" id="hourly_wage" required />
+        <input type="number" step="0.01" placeholder="Error Rate (%)" id="error_rate_manual" required />
+        <input type="number" placeholder="Error Cost (₹)" id="error_cost" required />
+        <input type="number" placeholder="Time Horizon (Months)" id="time_horizon_months" required />
+        <input type="number" placeholder="Implementation Cost (₹)" id="one_time_implementation_cost" required />
+        <button type="submit">Simulate</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h3>Results</h3>
+      <div id="results"></div>
+
+      <div id="reportSection" style="display:none; margin-top:10px;">
+        <input type="email" id="email" placeholder="Enter your email" />
+        <button id="generateReport">Generate PDF Report</button>
+        <div id="downloadLink"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("roiForm");
+    const resultsDiv = document.getElementById("results");
+    const reportSection = document.getElementById("reportSection");
+    let currentScenario = null;
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = {
+        scenario_name: document.getElementById("scenario_name").value,
+        monthly_invoice_volume: parseFloat(document.getElementById("monthly_invoice_volume").value),
+        num_ap_staff: parseFloat(document.getElementById("num_ap_staff").value),
+        avg_hours_per_invoice: parseFloat(document.getElementById("avg_hours_per_invoice").value),
+        hourly_wage: parseFloat(document.getElementById("hourly_wage").value),
+        error_rate_manual: parseFloat(document.getElementById("error_rate_manual").value),
+        error_cost: parseFloat(document.getElementById("error_cost").value),
+        time_horizon_months: parseFloat(document.getElementById("time_horizon_months").value),
+        one_time_implementation_cost: parseFloat(document.getElementById("one_time_implementation_cost").value)
+      };
+
+      const res = await fetch("http://localhost:5000/simulate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+
+      currentScenario = { ...data, ...result };
+      resultsDiv.innerHTML = `
+        Monthly Savings: ₹${result.monthly_savings}<br>
+        Payback Period: ${result.payback_period} months<br>
+        ROI: ${result.roi_percent}%`;
+
+      reportSection.style.display = "block";
+    });
+
+    document.getElementById("generateReport").addEventListener("click", async () => {
+      const email = document.getElementById("email").value;
+      if (!email) return alert("Enter email");
+
+      const res = await fetch("http://localhost:5000/report/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, scenario: currentScenario })
+      });
+      const data = await res.json();
+      document.getElementById("downloadLink").innerHTML = `<a href="${data.download_link}" target="_blank">Download PDF</a>`;
+    });
+  </script>
+</body>
+</html>

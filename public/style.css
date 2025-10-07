@@ -1,0 +1,99 @@
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: #f5f6f8;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.container {
+  width: 90%;
+  max-width: 700px;
+  margin: 40px auto;
+}
+
+h1 {
+  text-align: center;
+  color: #222;
+  font-weight: 600;
+}
+
+.card {
+  background: #fff;
+  padding: 20px 25px;
+  margin-top: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input, select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #888;
+}
+
+button {
+  background-color: #444;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background-color: #333;
+}
+
+#results {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-top: 10px;
+  background: #f9f9f9;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+#reportSection {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#reportSection input[type="email"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+#downloadLink a {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: #222;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+#downloadLink a:hover {
+  background-color: #0500003b;
+  align-items: center;
+}
